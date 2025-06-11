@@ -6,9 +6,11 @@ import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { ActivityIndicator, PermissionsAndroid, View } from 'react-native';
 import 'react-native-reanimated';
+
+// i was here
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
