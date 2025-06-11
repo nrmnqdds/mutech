@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618545150419",
+    "project_id": "mutech-bdfe4",
+    "storage_bucket": "mutech-bdfe4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618545150419:android:fc64371a5dc3decadd5726",
+        "android_client_info": {
+          "package_name": "com.nrmnqdds.mutech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdaSepFUrxoTK4oWPjrtToC_JN5jvGNrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
