@@ -11,6 +11,7 @@ import { ActivityIndicator, PermissionsAndroid, View } from 'react-native';
 import 'react-native-reanimated';
 
 // i was here
+// qud was here
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
