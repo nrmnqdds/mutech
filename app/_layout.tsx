@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
+import { doc, getFirestore, serverTimestamp, updateDoc } from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -109,6 +109,8 @@ export const TRANSLATIONS = {
   }
 };
 
+const db = getFirestore()
+
 // Language context for global language switching
 export const LanguageContext = createContext({
   language: 'en',
@@ -145,12 +147,9 @@ export default function RootLayout() {
   // Function to update FCM token in Firestore
   const updateFCMToken = async (userId: string, token: string) => {
     try {
-      await firestore()
-        .collection('users')
-        .doc(userId)
-        .update({
+      await updateDoc(doc(db, "users", userId), {
           fcmToken: token,
-          lastTokenUpdate: firestore.FieldValue.serverTimestamp(),
+          lastTokenUpdate: serverTimestamp(),
         });
       console.log('FCM token updated successfully');
     } catch (error) {
