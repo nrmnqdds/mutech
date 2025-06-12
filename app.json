@@ -62,6 +62,25 @@
       "eas": {
         "projectId": "5f381818-95e6-4566-be8e-c2a0bf794083"
       }
+    },
+    "build": {
+      "preview": {
+        "android": {
+          "buildType": "apk"
+        }
+      },
+      "preview2": {
+        "android": {
+          "gradleCommand": ":app:assembleRelease"
+        }
+      },
+      "preview3": {
+        "developmentClient": true
+      },
+      "preview4": {
+        "distribution": "internal"
+      },
+      "production": {}
     }
   }
 }

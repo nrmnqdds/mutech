@@ -1,9 +1,11 @@
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   getFirestore,
   query,
+  setDoc,
   where,
 } from "@react-native-firebase/firestore";
 import CryptoJS from "crypto-js";
@@ -21,8 +23,9 @@ import {
 } from "react-native";
 
 const generateRandomId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   for (let i = 0; i < 20; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -76,9 +79,11 @@ export default function SignUp() {
       // Hash password
       const hashedPassword = hashPassword(password);
 
+      const generated = generateRandomId();
+
       // Create new user document
       const userData = {
-        id: generateRandomId(),
+        id: generated,
         name,
         email: email.toLowerCase(),
         password: hashedPassword,
@@ -87,7 +92,9 @@ export default function SignUp() {
         createdAt: new Date().toISOString(),
       };
 
-      const docRef = await addDoc(collection(db, "users"), userData);
+      // const docRef = await addDoc(collection(db, "users"), userData);
+      const _docRef = doc(db, "users", generated);
+      const docRef = await setDoc(_docRef, userData);
       console.log("docRef", docRef);
       setSuccess("Registration successful! Please log in.");
       setTimeout(() => router.replace("/Login"), 1200);
