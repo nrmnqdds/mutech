@@ -62,6 +62,9 @@ export const TRANSLATIONS = {
     dark: 'Dark',
     system: 'System',
     fontSize: 'Font Size',
+    bank: 'BANK',
+    pharmacy: 'MOSQUE',
+    transport: 'TRANSPORT',
   },
   ms: {
     // Home page
@@ -109,6 +112,9 @@ export const TRANSLATIONS = {
     dark: 'Gelap',
     system: 'Sistem',
     fontSize: 'Saiz Fon',
+    bank: 'BANK',
+    pharmacy: 'MASJID',
+    transport: 'PENGANGKUTAN',
   }
 };
 
