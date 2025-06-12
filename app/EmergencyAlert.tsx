@@ -28,6 +28,33 @@ const COLORS: any = {
   ILLNESS: '#e85be6',
 };
 
+const HELP_MESSAGES: any = {
+  SNATCH: {
+    en: 'HELP!\nI AM BEING SNATCHED',
+    ms: 'TOLONG!\nSAYA SEDANG DIRAGUT'
+  },
+  ACCIDENT: {
+    en: 'HELP!\nI AM IN ACCIDENT',
+    ms: 'TOLONG!\nSAYA DALAM KEMALANGAN'
+  },
+  FIRE: {
+    en: 'HELP!\nTHERE IS A FIRE',
+    ms: 'TOLONG!\nADA KEBAKARAN'
+  },
+  'SEXUAL HARASSMENT': {
+    en: 'HELP!\nI AM BEING SEXUALLY HARASSED',
+    ms: 'TOLONG!\nSAYA DIKACAU SECARA SEKSUAL'
+  },
+  'WILD ANIMAL': {
+    en: 'HELP!\nTHERE IS A WILD ANIMAL',
+    ms: 'TOLONG!\nADA BINATANG LIAR'
+  },
+  ILLNESS: {
+    en: 'HELP!\nI AM ILL',
+    ms: 'TOLONG!\nSAYA SAKIT'
+  },
+};
+
 export default function EmergencyAlert() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -47,11 +74,11 @@ export default function EmergencyAlert() {
   return (
     <LinearGradient colors={["#1e90ff", "#0a2740"]} style={tw`flex-1`}>
       <SafeAreaView style={tw`flex-1`}>
-        <Text style={[tw`text-3xl font-bold italic text-center mt-2`, { color: '#1e90ff' }]}>
-          EMERGENCY CONTACTS
+        <Text style={[tw`text-3xl font-bold italic text-center mt-4`, { color: '#FFFFFF' }]}>
+          {language === 'en' ? 'EMERGENCY CONTACTS' : 'KONTAK KECEMASAN'}
         </Text>
 
-        <View style={tw`flex-row justify-around mt-2 mx-2`}>
+        <View style={tw`flex-row justify-around mt-4 mx-2`}>
           {emergencyContacts.length > 0 ? (
             emergencyContacts.map((contact, index) => (
               <View key={contact.id} style={tw`items-center mx-1`}>
@@ -75,30 +102,40 @@ export default function EmergencyAlert() {
           )}
         </View>
 
-        {/* Emergency Type Header - White bar */}
-        <View style={tw`bg-white mt-6 mb-0 py-2 items-center justify-center`}>
-          <Text style={tw`text-2xl font-bold italic text-black tracking-wider`}>{type.toUpperCase()}</Text>
+        <View style={tw`bg-white mt-8 mb-4 py-3 items-center justify-center`}>
+          <Text style={tw`text-2xl font-bold italic text-black tracking-wider`}>
+            {language === 'en' ? type.toUpperCase() : 
+              type === 'SNATCH' ? 'RAGUT' :
+              type === 'ACCIDENT' ? 'KEMALANGAN' :
+              type === 'FIRE' ? 'KEBAKARAN' :
+              type === 'SEXUAL HARASSMENT' ? 'GANGGUAN SEKSUAL' :
+              type === 'WILD ANIMAL' ? 'BINATANG LIAR' :
+              type === 'ILLNESS' ? 'PENYAKIT' : type.toUpperCase()
+            }
+          </Text>
         </View>
 
         {/* Main Content Area: Icon Box and I AM SAFE NOW button */}
-        <View style={tw`items-center justify-center`}>
+        <View style={tw`flex-1 items-center justify-center px-4`}>
           {/* Black Box containing Icon and EMERGENCY ALERTS! text */}
-          <View style={tw`bg-black mx-4 rounded-3xl py-6 mb-0 items-center`}>
+          <View style={tw`bg-black w-full rounded-3xl py-8 items-center shadow-lg`}>
             <View
-              style={[tw`w-56 h-56 rounded-3xl justify-center items-center mb-2`, {backgroundColor: COLORS[type] || '#FFC107'}]}
+              style={[tw`w-56 h-56 rounded-3xl justify-center items-center mb-4`, {backgroundColor: COLORS[type] || '#FFC107'}]}
             >
               {ICONS[type] || <MaterialCommunityIcons name="alert-decagram" size={90} color="#000" />}
             </View>
-            <Text style={tw`text-white text-xl font-bold`}>
-              EMERGENCY ALERTS!
+            <Text style={tw`text-white text-2xl font-bold tracking-wider`}>
+              {language === 'en' ? 'EMERGENCY ALERTS!' : 'AMARAN KECEMASAN!'}
             </Text>
           </View>
 
           {/* I AM SAFE NOW Button */}
           <TouchableOpacity
-            style={tw`bg-black px-10 py-4 rounded-full mt-0`}
+            style={tw`bg-black px-12 py-4 rounded-full mt-12 shadow-lg`}
             onPress={() => router.push({ pathname: '/EmergencyContact', params: { type: type, safe: '1' } })}>
-            <Text style={tw`text-white text-lg font-bold`}>I AM SAFE NOW</Text>
+            <Text style={tw`text-white text-xl font-bold tracking-wider`}>
+              {language === 'en' ? 'I AM SAFE NOW' : 'SAYA SELAMAT SEKARANG'}
+            </Text>
           </TouchableOpacity>
         </View>
 

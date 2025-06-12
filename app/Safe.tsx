@@ -29,7 +29,9 @@ export default function Safe() {
     <LinearGradient colors={["#1e90ff", "#0a2740"]} style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         {/* Top contacts row */}
-        <Text style={[styles.notifyHeader, { color: '#cfe6ff' }]}>notifyEmergencyContact</Text>
+        <Text style={[styles.notifyHeader, { color: '#cfe6ff' }]}>
+          {language === 'en' ? 'EMERGENCY CONTACT' : 'KONTAK KECEMASAN'}
+        </Text>
         <View style={styles.contactsRow}>
           {emergencyContacts.length > 0 ? (
             emergencyContacts.map((contact, index) => (
@@ -37,7 +39,7 @@ export default function Safe() {
                 <Image source={{ uri: contact.image }} style={styles.avatar} />
                 <Text style={[styles.contactName, { color: '#111' }]}>{contact.name.toUpperCase()}</Text>
                 <Text style={[styles.contactStatus, { color: index % 2 === 0 ? '#1ed760' : '#0070f3' }]}>
-                  {index % 2 === 0 ? 'notified' : 'notifying'}
+                  {index % 2 === 0 ? (language === 'en' ? 'NOTIFIED' : 'DIMAKLUMKAN') : (language === 'en' ? 'NOTIFYING' : 'MEMAKLUMKAN')}
                 </Text>
               </View>
             ))
@@ -62,8 +64,10 @@ export default function Safe() {
           </View>
         </View>
         {/* DONE button */}
-        <TouchableOpacity style={styles.doneButton} onPress={() => router.push('/') }>
-          <Text style={[styles.doneButtonText, { color: '#1ed760' }]}>done</Text>
+        <TouchableOpacity style={styles.doneButton} onPress={() => router.push('/')}>
+          <Text style={[styles.doneButtonText, { color: '#1ed760' }]}>
+            {language === 'en' ? 'DONE' : 'SELESAI'}
+          </Text>
         </TouchableOpacity>
         {/* Bottom Navigation */}
         <BottomBar active="home" />

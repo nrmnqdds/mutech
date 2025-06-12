@@ -45,14 +45,13 @@ const LOCATIONS = [
     color: '#ff9800',
     icon: <MaterialCommunityIcons name="food" size={48} color="#000" style={{ marginBottom: 6 }} />,
     messages: [
-      'I need help ordering food',
-      'What are today\'s specials?',
-      'I have food allergies, can you help?',
-      'Where is the restroom?',
-      'I need help with the menu',
-      'Can I get the bill please?',
-      'I need help with payment',
-      'Where can I find the exit?',
+      'Hi, I am mute. Can you please help me with my order?',
+      'Excuse me, I cannot speak. May I show you my order on my phone?',
+      'Hello, I need help ordering. Can I point to the menu?',
+      'Can you assist me with payment or ordering?',
+      'Hi, I cannot speak. Please be patient while I type my request.',
+      'Can I write down or show you what I want to eat?',
+      'Please help me with my food order. I use this phone to communicate.',
     ],
   },
   {
@@ -71,18 +70,17 @@ const LOCATIONS = [
     ],
   },
   {
-    label: 'PHARMACY',
-    color: '#e91e63',
-    icon: <MaterialCommunityIcons name="medical-bag" size={48} color="#000" style={{ marginBottom: 6 }} />,
+    label: 'mosque',
+    color: '#FF0000',
+    icon: <MaterialCommunityIcons name="mosque" size={48} color="#000" style={{ marginBottom: 6 }} />,
     messages: [
-      'I need help getting medicine',
-      'Where is the prescription counter?',
-      'I need help with medication instructions',
-      'Where can I find over-the-counter medicine?',
-      'I need help with insurance coverage',
-      'Where is the pharmacist?',
-      'I need help with dosage information',
-      'Where are the restrooms?',
+      'Assalamualaikum. Can you please tell me the next prayer time?',
+      'Where is the wudhu\' (ablution) area?',
+      'Who is giving the khutbah or leading the prayer today?',
+      'Assalamualaikum, where is the Qiblat direction?',
+      'Can I borrow a prayer mat (sajadah), please?',
+      'I need help to perform prayer. Can you guide me, please?',
+      'Are there any mosque programs or activities today?',
     ],
   },
   {
@@ -109,7 +107,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     hospital: 'HOSPITAL',
     restaurant: 'RESTAURANT',
     bank: 'BANK',
-    pharmacy: 'PHARMACY',
+    mosque: 'MOSQUE',
     transport: 'TRANSPORT',
     // Supermarket messages (casual)
     msg_supermarket_1: 'Can you help me find something in the supermarket?',
@@ -164,6 +162,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     msg_transport_6: 'Where\'s the taxi stand?',
     msg_transport_7: 'Can you help with the schedule?',
     msg_transport_8: 'Where\'s the info desk?',
+    // Mosque messages
+    msg_mosque_1: 'Assalamualaikum. Can you please tell me the next prayer time?',
+    msg_mosque_2: 'Where is the wudhu\' (ablution) area?',
+    msg_mosque_3: 'Who is giving the khutbah or leading the prayer today?',
+    msg_mosque_4: 'Assalamualaikum, where is the Qiblat direction?',
+    msg_mosque_5: 'Can I borrow a prayer mat (sajadah), please?',
+    msg_mosque_6: 'I need help to perform prayer. Can you guide me, please?',
+    msg_mosque_7: 'Are there any mosque programs or activities today?',
   },
   ms: {
     location: 'Lokasi',
@@ -171,7 +177,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     hospital: 'HOSPITAL',
     restaurant: 'RESTORAN',
     bank: 'BANK',
-    pharmacy: 'FARMASI',
+    mosque: 'MASJID',
     transport: 'PENGANGKUTAN',
     // Supermarket messages (casual)
     msg_supermarket_1: 'Boleh tolong saya cari barang di pasaraya?',
@@ -191,14 +197,13 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     msg_hospital_7: 'Macam mana nak buat temujanji?',
     msg_hospital_8: 'Kat mana tandas?',
     // Restaurant messages (casual)
-    msg_restaurant_1: 'Boleh tolong saya pesan makanan?',
-    msg_restaurant_2: 'Apa yang istimewa hari ni?',
-    msg_restaurant_3: 'Saya ada alahan makanan, boleh tolong?',
-    msg_restaurant_4: 'Kat mana tandas?',
-    msg_restaurant_5: 'Boleh tolong dengan menu?',
-    msg_restaurant_6: 'Boleh saya dapatkan bil?',
-    msg_restaurant_7: 'Macam mana nak bayar?',
-    msg_restaurant_8: 'Macam mana nak keluar?',
+    msg_restaurant_1: 'Hi, saya bisu. Boleh tolong saya dengan pesanan saya?',
+    msg_restaurant_2: 'Maaf, saya tidak boleh bercakap. Boleh saya tunjukkan pesanan saya di telefon saya?',
+    msg_restaurant_3: 'Helo, saya perlukan bantuan untuk memesan. Boleh saya tunjuk pada menu?',
+    msg_restaurant_4: 'Boleh bantu saya dengan pembayaran atau pesanan?',
+    msg_restaurant_5: 'Hai, saya tidak boleh bercakap. Harap bersabar sementara saya menaip permintaan saya.',
+    msg_restaurant_6: 'Boleh saya tulis atau tunjukkan apa yang saya mahu makan?',
+    msg_restaurant_7: 'Tolong bantu saya dengan pesanan makanan saya. Saya menggunakan telefon ini untuk berkomunikasi.',
     // Bank messages (casual)
     msg_bank_1: 'Boleh tolong saya uruskan hal bank?',
     msg_bank_2: 'Kat mana ATM?',
@@ -226,6 +231,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     msg_transport_6: 'Kat mana tempat teksi?',
     msg_transport_7: 'Boleh tolong dengan jadual?',
     msg_transport_8: 'Kat mana kaunter maklumat?',
+    // Mosque messages
+    msg_mosque_1: 'Assalamualaikum. Boleh beritahu saya waktu solat seterusnya?',
+    msg_mosque_2: 'Di mana kawasan wudhu\'?',
+    msg_mosque_3: 'Siapa yang memberi khutbah atau memimpin solat hari ini?',
+    msg_mosque_4: 'Assalamualaikum, di mana arah kiblat?',
+    msg_mosque_5: 'Boleh saya pinjam sejadah?',
+    msg_mosque_6: 'Saya perlukan bantuan untuk melakukan solat. Boleh tolong tunjukkan?',
+    msg_mosque_7: 'Ada program atau aktiviti masjid hari ini?',
   },
 };
 
@@ -269,15 +282,14 @@ const LOCATION_MESSAGES: Record<string, string[]> = {
     'msg_bank_7',
     'msg_bank_8',
   ],
-  PHARMACY: [
-    'msg_pharmacy_1',
-    'msg_pharmacy_2',
-    'msg_pharmacy_3',
-    'msg_pharmacy_4',
-    'msg_pharmacy_5',
-    'msg_pharmacy_6',
-    'msg_pharmacy_7',
-    'msg_pharmacy_8',
+  mosque: [
+    'msg_mosque_1',
+    'msg_mosque_2',
+    'msg_mosque_3',
+    'msg_mosque_4',
+    'msg_mosque_5',
+    'msg_mosque_6',
+    'msg_mosque_7',
   ],
   TRANSPORT: [
     'msg_transport_1',
@@ -372,7 +384,9 @@ export default function Others() {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{selectedLocation?.label}</Text>
+                <Text style={styles.modalTitle}>
+                  {selectedLocation ? TRANSLATIONS[language][selectedLocation.label.toLowerCase()] : ''}
+                </Text>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => setSelectedLocation(null)}
