@@ -1,13 +1,13 @@
+import notifee, { AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   collection,
-  doc,
   getDocs,
   getFirestore,
   query,
   serverTimestamp,
   updateDoc,
-  where,
+  where
 } from "@react-native-firebase/firestore";
 import messaging from "@react-native-firebase/messaging";
 import {
@@ -136,7 +136,7 @@ const db = getFirestore();
 // Language context for global language switching
 export const LanguageContext = createContext({
   language: "en",
-  setLanguage: (lang: "en" | "ms") => {},
+  setLanguage: (lang: "en" | "ms") => { },
   t: (key: string) => "",
 });
 
@@ -161,6 +161,14 @@ export default function RootLayout() {
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
+
+    notifee.createChannel({
+      id: 'emergency',
+      name: 'Emergency Notification',
+      lights: true,
+      vibration: true,
+      importance: AndroidImportance.HIGH,
+    });
   }, []);
 
   const t = (key: string) => {
