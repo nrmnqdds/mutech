@@ -1,12 +1,21 @@
-import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
-import { useRouter } from 'expo-router';
-import React, { useContext, useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { BottomBar } from '../components/BottomBar';
-import { LanguageContext } from './_layout';
-import { FamilyMember, familyMembersService } from './utils/familyMembers';
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import firestore from "@react-native-firebase/firestore";
+import { useRouter } from "expo-router";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { BottomBar } from "../components/BottomBar";
+import { LanguageContext } from "./_layout";
+import { FamilyMember, familyMembersService } from "./utils/familyMembers";
 
 interface User {
   id: string;
@@ -21,7 +30,7 @@ export default function Users() {
   const { language, t } = useContext(LanguageContext);
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,8 +39,8 @@ export default function Users() {
 
   useEffect(() => {
     // Filter users based on search query
-    const filtered = users.filter(user => 
-      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = users.filter((user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
     setFilteredUsers(filtered);
   }, [searchQuery, users]);
@@ -39,27 +48,28 @@ export default function Users() {
   const loadUsers = async () => {
     try {
       // Get current user's ID
-      const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem("token");
       if (!token) {
-        router.replace('/Login');
+        router.replace("/Login");
         return;
       }
       const currentUser = JSON.parse(token);
 
       // Get all users except current user
-      const usersSnapshot = await firestore().collection('users').get();
+      const usersSnapshot = await firestore().collection("users").get();
       const usersData = usersSnapshot.docs
-        .map(doc => ({
+        .map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }))
-        .filter(user => user.id !== currentUser.id) as User[];
-      
+        .filter((user) => user.id !== currentUser.id) as User[];
+
       setUsers(usersData);
+      console.log("users: ", usersData);
       setFilteredUsers(usersData);
     } catch (error) {
-      console.error('Error loading users:', error);
-      Alert.alert('Error', 'Failed to load users');
+      console.error("Error loading users:", error);
+      Alert.alert("Error", "Failed to load users");
     } finally {
       setLoading(false);
     }
@@ -67,21 +77,24 @@ export default function Users() {
 
   const handleAddToFamily = async (user: User) => {
     try {
-      const newFamilyMember: Omit<FamilyMember, 'id'> = {
+      const newFamilyMember: FamilyMember = {
+        id: user.id,
         name: user.name,
-        phoneNumber: '', // You might want to add phone number to user profile
-        relationship: 'Family Member',
-        address: '', // You might want to add address to user profile
+        phoneNumber: "", // You might want to add phone number to user profile
+        relationship: "Family Member",
+        address: "", // You might want to add address to user profile
         isEmergencyContact: false,
-        image: user.image || 'https://randomuser.me/api/portraits/men/1.jpg'
+        image: user.image || "https://randomuser.me/api/portraits/men/1.jpg",
+        fcmToken: user.fcmToken, // Include the FCM token
+        userId: user.id, // Store the original user ID for reference
       };
 
       await familyMembersService.addFamilyMember(newFamilyMember);
-      Alert.alert('Success', 'User added to family members');
-      router.push('/FamilyMembers');
+      Alert.alert("Success", "User added to family members");
+      router.push("/FamilyMembers");
     } catch (error) {
-      console.error('Error adding to family:', error);
-      Alert.alert('Error', 'Failed to add user to family members');
+      console.error("Error adding to family:", error);
+      Alert.alert("Error", "Failed to add user to family members");
     }
   };
 
@@ -92,7 +105,12 @@ export default function Users() {
       </View>
 
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
+        <Ionicons
+          name="search"
+          size={20}
+          color="#666"
+          style={styles.searchIcon}
+        />
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name..."
@@ -101,7 +119,10 @@ export default function Users() {
           placeholderTextColor="#999"
         />
         {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+          <TouchableOpacity
+            onPress={() => setSearchQuery("")}
+            style={styles.clearButton}
+          >
             <Ionicons name="close-circle" size={20} color="#666" />
           </TouchableOpacity>
         )}
@@ -111,7 +132,10 @@ export default function Users() {
         {filteredUsers.map((user) => (
           <View key={user.id} style={styles.userCard}>
             <Image
-              source={{ uri: user.image || 'https://randomuser.me/api/portraits/men/1.jpg' }}
+              source={{
+                uri:
+                  user.image || "https://randomuser.me/api/portraits/men/1.jpg",
+              }}
               style={styles.userAvatar}
             />
             <View style={styles.userInfo}>
@@ -140,30 +164,30 @@ export default function Users() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     margin: 16,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
   searchIcon: {
     marginRight: 8,
@@ -172,7 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   clearButton: {
     padding: 4,
@@ -182,17 +206,17 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   userCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    alignItems: 'center',
+    alignItems: "center",
   },
   userAvatar: {
     width: 60,
@@ -205,27 +229,27 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   tokenBadge: {
-    backgroundColor: '#4caf50',
+    backgroundColor: "#4caf50",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   tokenBadgeText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   addButton: {
     padding: 8,
   },
-}); 
+});

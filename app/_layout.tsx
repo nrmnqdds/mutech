@@ -1,132 +1,144 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { doc, getFirestore, serverTimestamp, updateDoc } from '@react-native-firebase/firestore';
-import messaging from '@react-native-firebase/messaging';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import * as Notifications from 'expo-notifications';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { createContext, useEffect, useState } from 'react';
-import { ActivityIndicator, PermissionsAndroid, View } from 'react-native';
-import 'react-native-reanimated';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "@react-native-firebase/firestore";
+import messaging from "@react-native-firebase/messaging";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import * as Notifications from "expo-notifications";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { createContext, useEffect, useState } from "react";
+import { ActivityIndicator, PermissionsAndroid, View } from "react-native";
+import "react-native-reanimated";
 
 // i was here
 // qud was here
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export const TRANSLATIONS = {
   en: {
     // Home page
-    snatch: 'SNATCH',
-    accident: 'ACCIDENT',
-    fire: 'FIRE',
-    sexualHarassment: 'SEXUAL HARASSMENT',
-    wildAnimal: 'WILD ANIMAL',
-    illness: 'ILLNESS',
-    others: 'OTHERS',
+    snatch: "SNATCH",
+    accident: "ACCIDENT",
+    fire: "FIRE",
+    sexualHarassment: "SEXUAL HARASSMENT",
+    wildAnimal: "WILD ANIMAL",
+    illness: "ILLNESS",
+    others: "OTHERS",
     // Notepad
-    notepad: 'Notepad',
-    writeNote: 'Write your note...',
-    saveNote: 'Save Note',
-    showFullScreen: 'Show Full Screen',
-    sound: 'Sound',
-    back: 'Back',
-    edit: 'Edit',
-    delete: 'Delete',
-    cancel: 'Cancel',
-    noteDeleted: 'Note deleted',
-    undo: 'Undo',
+    notepad: "Notepad",
+    writeNote: "Write your note...",
+    saveNote: "Save Note",
+    showFullScreen: "Show Full Screen",
+    sound: "Sound",
+    back: "Back",
+    edit: "Edit",
+    delete: "Delete",
+    cancel: "Cancel",
+    noteDeleted: "Note deleted",
+    undo: "Undo",
     // Profile
-    profile: 'Profile',
-    name: 'Name',
-    enterName: 'Enter your name',
-    age: 'Age',
-    enterAge: 'Enter your age',
-    address: 'Address',
-    enterAddress: 'Enter your address',
-    phone: 'Phone Number',
-    enterPhone: 'Enter your phone number',
-    emergencyContact: 'Emergency Contact',
-    enterEmergencyContact: 'Enter emergency contact name',
-    emergencyPhone: 'Emergency Phone',
-    enterEmergencyPhone: 'Enter emergency contact number',
-    editProfile: 'Edit Profile',
-    saveProfile: 'Save Profile',
-    changePhoto: 'Change Photo',
+    profile: "Profile",
+    name: "Name",
+    enterName: "Enter your name",
+    age: "Age",
+    enterAge: "Enter your age",
+    address: "Address",
+    enterAddress: "Enter your address",
+    phone: "Phone Number",
+    enterPhone: "Enter your phone number",
+    emergencyContact: "Emergency Contact",
+    enterEmergencyContact: "Enter emergency contact name",
+    emergencyPhone: "Emergency Phone",
+    enterEmergencyPhone: "Enter emergency contact number",
+    editProfile: "Edit Profile",
+    saveProfile: "Save Profile",
+    changePhoto: "Change Photo",
     // Emergency
-    help: 'HELP',
-    notify: 'NOTIFY',
+    help: "HELP",
+    notify: "NOTIFY",
     // Theme
-    light: 'Light',
-    dark: 'Dark',
-    system: 'System',
-    fontSize: 'Font Size',
-    bank: 'BANK',
-    pharmacy: 'MOSQUE',
-    transport: 'TRANSPORT',
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+    fontSize: "Font Size",
+    bank: "BANK",
+    pharmacy: "MOSQUE",
+    transport: "TRANSPORT",
   },
   ms: {
     // Home page
-    snatch: 'RAGUT',
-    accident: 'KEMALANGAN',
-    fire: 'KEBAKARAN',
-    sexualHarassment: 'GANGGUAN SEKSUAL',
-    wildAnimal: 'BINATANG LIAR',
-    illness: 'PENYAKIT',
-    others: 'LAIN-LAIN',
+    snatch: "RAGUT",
+    accident: "KEMALANGAN",
+    fire: "KEBAKARAN",
+    sexualHarassment: "GANGGUAN SEKSUAL",
+    wildAnimal: "BINATANG LIAR",
+    illness: "PENYAKIT",
+    others: "LAIN-LAIN",
     // Notepad
-    notepad: 'Nota',
-    writeNote: 'Tulis nota anda...',
-    saveNote: 'Simpan Nota',
-    showFullScreen: 'Tunjuk Skrin Penuh',
-    sound: 'Bunyi',
-    back: 'Kembali',
-    edit: 'Edit',
-    delete: 'Padam',
-    cancel: 'Batal',
-    noteDeleted: 'Nota dipadam',
-    undo: 'Batal',
+    notepad: "Nota",
+    writeNote: "Tulis nota anda...",
+    saveNote: "Simpan Nota",
+    showFullScreen: "Tunjuk Skrin Penuh",
+    sound: "Bunyi",
+    back: "Kembali",
+    edit: "Edit",
+    delete: "Padam",
+    cancel: "Batal",
+    noteDeleted: "Nota dipadam",
+    undo: "Batal",
     // Profile
-    profile: 'Profil',
-    name: 'Nama',
-    enterName: 'Masukkan nama anda',
-    age: 'Umur',
-    enterAge: 'Masukkan umur anda',
-    address: 'Alamat',
-    enterAddress: 'Masukkan alamat anda',
-    phone: 'Nombor Telefon',
-    enterPhone: 'Masukkan nombor telefon anda',
-    emergencyContact: 'Kontak Kecemasan',
-    enterEmergencyContact: 'Masukkan nama kontak kecemasan',
-    emergencyPhone: 'Telefon Kecemasan',
-    enterEmergencyPhone: 'Masukkan nombor telefon kecemasan',
-    editProfile: 'Edit Profil',
-    saveProfile: 'Simpan Profil',
-    changePhoto: 'Tukar Foto',
+    profile: "Profil",
+    name: "Nama",
+    enterName: "Masukkan nama anda",
+    age: "Umur",
+    enterAge: "Masukkan umur anda",
+    address: "Alamat",
+    enterAddress: "Masukkan alamat anda",
+    phone: "Nombor Telefon",
+    enterPhone: "Masukkan nombor telefon anda",
+    emergencyContact: "Kontak Kecemasan",
+    enterEmergencyContact: "Masukkan nama kontak kecemasan",
+    emergencyPhone: "Telefon Kecemasan",
+    enterEmergencyPhone: "Masukkan nombor telefon kecemasan",
+    editProfile: "Edit Profil",
+    saveProfile: "Simpan Profil",
+    changePhoto: "Tukar Foto",
     // Emergency
-    help: 'TOLONG',
-    notify: 'MAKLUM',
+    help: "TOLONG",
+    notify: "MAKLUM",
     // Theme
-    light: 'Cerah',
-    dark: 'Gelap',
-    system: 'Sistem',
-    fontSize: 'Saiz Fon',
-    bank: 'BANK',
-    pharmacy: 'MASJID',
-    transport: 'PENGANGKUTAN',
-  }
+    light: "Cerah",
+    dark: "Gelap",
+    system: "Sistem",
+    fontSize: "Saiz Fon",
+    bank: "BANK",
+    pharmacy: "MASJID",
+    transport: "PENGANGKUTAN",
+  },
 };
 
-const db = getFirestore()
+const db = getFirestore();
 
 // Language context for global language switching
 export const LanguageContext = createContext({
-  language: 'en',
-  setLanguage: (lang: 'en' | 'ms') => {},
-  t: (key: string) => '',
+  language: "en",
+  setLanguage: (lang: "en" | "ms") => {},
+  t: (key: string) => "",
 });
-
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -140,13 +152,15 @@ Notifications.setNotificationHandler({
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
   const [isLoggedIn, setIsLoggedIn] = useState<null | boolean>(null);
-  const [language, setLanguage] = useState<'en' | 'ms'>('en');
+  const [language, setLanguage] = useState<"en" | "ms">("en");
 
   useEffect(() => {
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
   }, []);
 
   const t = (key: string) => {
@@ -156,13 +170,27 @@ export default function RootLayout() {
   // Function to update FCM token in Firestore
   const updateFCMToken = async (userId: string, token: string) => {
     try {
-      await updateDoc(doc(db, "users", userId), {
-          fcmToken: token,
-          lastTokenUpdate: serverTimestamp(),
-        });
-      console.log('FCM token updated successfully');
+      // Query to find the document with the custom id field
+      const q = query(collection(db, "users"), where("id", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.error("No user found with id:", userId);
+        return;
+      }
+
+      // Get the first (and should be only) document
+      const userDoc = querySnapshot.docs[0];
+
+      // Update the document using its Firestore document reference
+      await updateDoc(userDoc.ref, {
+        fcmToken: token,
+        lastTokenUpdate: serverTimestamp(),
+      });
+
+      console.log("FCM token updated successfully");
     } catch (error) {
-      console.error('Error updating FCM token:', error);
+      console.error("Error updating FCM token:", error);
     }
   };
 
@@ -174,24 +202,24 @@ export default function RootLayout() {
         await updateFCMToken(userId, token);
       }
     } catch (error) {
-      console.error('Error getting FCM token:', error);
+      console.error("Error getting FCM token:", error);
     }
   };
 
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        console.log('Login check - Token:', token ? 'exists' : 'not found');
+        const token = await AsyncStorage.getItem("token");
+        console.log("Login check - Token:", token ? "exists" : "not found");
         setIsLoggedIn(!!token);
-        
+
         // If user is logged in, get and save FCM token
         if (token) {
           const userData = JSON.parse(token);
           await getAndSaveFCMToken(userData.id);
         }
       } catch (error) {
-        console.error('Error checking login status:', error);
+        console.error("Error checking login status:", error);
         setIsLoggedIn(false);
       }
     };
@@ -202,13 +230,13 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = messaging().onTokenRefresh(async (token) => {
       try {
-        const userToken = await AsyncStorage.getItem('token');
+        const userToken = await AsyncStorage.getItem("token");
         if (userToken) {
           const userData = JSON.parse(userToken);
           await updateFCMToken(userData.id, token);
         }
       } catch (error) {
-        console.error('Error handling token refresh:', error);
+        console.error("Error handling token refresh:", error);
       }
     });
 
@@ -217,7 +245,7 @@ export default function RootLayout() {
 
   if (isLoggedIn === null) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#1e90ff" />
       </View>
     );
@@ -228,11 +256,14 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log('Current login status:', isLoggedIn ? 'logged in' : 'not logged in');
+  console.log(
+    "Current login status:",
+    isLoggedIn ? "logged in" : "not logged in",
+  );
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           {!isLoggedIn ? (
             <>

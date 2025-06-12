@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
 import {
   collection,
-  doc,
   getDocs,
   getFirestore,
   query,
@@ -38,10 +37,24 @@ export default function Login() {
 
   const updateFCMToken = async (userId: string, token: string) => {
     try {
-      await updateDoc(doc(db, "users", userId), {
+      // Query to find the document with the custom id field
+      const q = query(collection(db, "users"), where("id", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.error("No user found with id:", userId);
+        return;
+      }
+
+      // Get the first (and should be only) document
+      const userDoc = querySnapshot.docs[0];
+
+      // Update the document using its Firestore document reference
+      await updateDoc(userDoc.ref, {
         fcmToken: token,
         lastTokenUpdate: serverTimestamp(),
       });
+
       console.log("FCM token updated successfully");
     } catch (error) {
       console.error("Error updating FCM token:", error);
@@ -84,6 +97,8 @@ export default function Login() {
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data();
 
+      console.log("userData: ", userData);
+
       // Verify password
       const hashedInputPassword = hashPassword(password);
       const isValidPassword = hashedInputPassword === userData.password;
@@ -95,7 +110,7 @@ export default function Login() {
 
       // Store user data in AsyncStorage
       const userToken = {
-        id: userDoc.id,
+        id: userData.id,
         email: userData.email,
         name: userData.name,
       };
