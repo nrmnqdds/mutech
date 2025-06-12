@@ -22,7 +22,12 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.nrmnqdds.mutech",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBavlVZNoipLqdFyq9Cj9EsAPYJ2ufwRlE"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
