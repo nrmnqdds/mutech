@@ -1,5 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import firestore from "@react-native-firebase/firestore";
+import firestore, {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "@react-native-firebase/firestore";
 
 export interface FamilyMember {
   id: string;
@@ -26,6 +32,8 @@ const getCurrentUserId = async (): Promise<string | null> => {
   }
 };
 
+const db = getFirestore();
+
 export const familyMembersService = {
   // Get all family members for the current user
   async getAllFamilyMembers(): Promise<FamilyMember[]> {
@@ -35,18 +43,27 @@ export const familyMembersService = {
         throw new Error("User not authenticated");
       }
 
-      const snapshot = await firestore()
-        .collection("users")
-        .doc(userId)
-        .collection("familyMembers")
-        .get();
+      const q = query(collection(db, "users"), where("id", "==", userId));
+      const querySnapshot = await getDocs(q);
 
-      const members = snapshot.docs.map((doc) => ({
+      if (querySnapshot.empty) {
+        console.error("No user found with id:", userId);
+        return [];
+      }
+
+      // Get the first (and should be only) document
+      const userDoc = querySnapshot.docs[0];
+
+      // const user = userDoc.data();
+
+      const members = await userDoc.ref.collection("familyMembers").get();
+
+      const membersData = members.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as FamilyMember[];
 
-      return members;
+      return membersData;
     } catch (error) {
       console.error("Error getting family members:", error);
       return [];
