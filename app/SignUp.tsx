@@ -1,4 +1,11 @@
-import { addDoc, collection, getDocs, getFirestore, query, where } from "@react-native-firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "@react-native-firebase/firestore";
 import CryptoJS from "crypto-js";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -22,7 +29,7 @@ export default function SignUp() {
   const [success, setSuccess] = useState("");
   const router = useRouter();
 
-  const db = getFirestore()
+  const db = getFirestore();
 
   const hashPassword = (password: string) => {
     return CryptoJS.SHA256(password).toString();
@@ -44,8 +51,11 @@ export default function SignUp() {
     setSuccess("");
     try {
       // Check if email already exists
-      const q = query(collection(db, "users"), where("email", "==", email.toLowerCase()))
-      const querySnapshot = await getDocs(q)
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", email.toLowerCase()),
+      );
+      const querySnapshot = await getDocs(q);
 
       console.log("querySnapshot", querySnapshot.docs);
 
@@ -59,6 +69,7 @@ export default function SignUp() {
 
       // Create new user document
       const userData = {
+        id: crypto.randomUUID(),
         name,
         email: email.toLowerCase(),
         password: hashedPassword,

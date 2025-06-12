@@ -1,5 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { collection, getDocs, getFirestore, query, where } from "@react-native-firebase/firestore";
+import messaging from "@react-native-firebase/messaging";
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "@react-native-firebase/firestore";
 import CryptoJS from "crypto-js";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -20,10 +30,34 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const db = getFirestore()
+  const db = getFirestore();
 
   const hashPassword = (password: string) => {
     return CryptoJS.SHA256(password).toString();
+  };
+
+  const updateFCMToken = async (userId: string, token: string) => {
+    try {
+      await updateDoc(doc(db, "users", userId), {
+        fcmToken: token,
+        lastTokenUpdate: serverTimestamp(),
+      });
+      console.log("FCM token updated successfully");
+    } catch (error) {
+      console.error("Error updating FCM token:", error);
+    }
+  };
+
+  // Function to get and save FCM token
+  const getAndSaveFCMToken = async (userId: string) => {
+    try {
+      const token = await messaging().getToken();
+      if (token) {
+        await updateFCMToken(userId, token);
+      }
+    } catch (error) {
+      console.error("Error getting FCM token:", error);
+    }
   };
 
   const handleLogin = async () => {
@@ -36,8 +70,11 @@ export default function Login() {
     setError("");
     try {
       // Query Firestore for user with matching email
-      const q = query(collection(db, "users"), where("email", "==", email.toLowerCase()))
-      const querySnapshot = await getDocs(q)
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", email.toLowerCase()),
+      );
+      const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
         setError("Invalid email or password");
@@ -62,6 +99,8 @@ export default function Login() {
         email: userData.email,
         name: userData.name,
       };
+
+      await getAndSaveFCMToken(userToken.id);
 
       await AsyncStorage.setItem("token", JSON.stringify(userToken));
       router.replace("/");
